@@ -35,7 +35,7 @@ try:
     daysdelete = currentTime - timedelta(days=int(daystodelete)) # calculates time until wich to delete the logs
     rl = requests.post(webhookurl, data={"content": "<LOGNOTIFIER> sending logs from the last " + daystosend + " days"})
     for folder in logfolders: # loops trough logfolders defined in config
-        folder = folder + "\\*"
+        folder = folder + "*"
         print("<LOGNOTIFIER> checking folder: " + folder) # log message
         list_of_files = glob.glob(folder)
         for file in list_of_files: # loops trough files in logfolder selected by former loop
