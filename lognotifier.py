@@ -33,7 +33,7 @@ while configCheck == False: # loop to ensure config gets loaded, will retry if i
 try:
     dayscheck = currentTime - timedelta(days=int(daystosend)) # calculates time until wich to send the logs
     daysdelete = currentTime - timedelta(days=int(daystodelete)) # calculates time until wich to delete the logs
-    rl = requests.post(webhookurl, data={"content": "<LOGNOTIFIER> sending logs from the last " + daystosend + "days"})
+    rl = requests.post(webhookurl, data={"content": "<LOGNOTIFIER> sending logs from the last " + daystosend + " days"})
     for folder in logfolders: # loops trough logfolders defined in config
         folder = folder + "\\*"
         print("<LOGNOTIFIER> checking folder: " + folder) # log message
@@ -53,11 +53,14 @@ try:
                         rl = requests.post(webhookurl, data={"content": file + " is too big to send"}) # sends error message to webhook
                         print("<LOGNOTIFIER> " + file + " was too big to send to webhook") # log message
             else:
-                if ageOfFile < daysdelete.timestamp(): # checks if file is older then days to delete defined in config
-                    os.remove(file) # re,pves fo;e
-                    print("<LOGNOTIFIER> " + file + " deleted because it is older then " + daystodelete + " days") # log message
+                if daystodelete != "":
+                    if ageOfFile < daysdelete.timestamp(): # checks if file is older then days to delete defined in config
+                        os.remove(file) # removes file
+                        print("<LOGNOTIFIER> " + file + " deleted because it is older then " + daystodelete + " days") # log message
+                    else:
+                        print("<LOGNOTIFIER> " + file + " left untouched because it is not older then " + daystodelete + " days") # log message
                 else:
-                    print("<LOGNOTIFIER> " +file + " left untouched") # log message
+                    print("<LOGNOTIFIER> " + file + " left untouched because daystodelte is not set") # log message
     if fileSend == False: # checks if any logs were send to webhook
         rl = requests.post(webhookurl, data={"content": "<LOGNOTIFIER> No logs to send"}) # sends message to webhook if no logs to send
 except Exception as e:
