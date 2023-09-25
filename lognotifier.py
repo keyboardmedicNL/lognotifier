@@ -33,7 +33,15 @@ while configCheck == False: # loop to ensure config gets loaded, will retry if i
 try:
     dayscheck = currentTime - timedelta(days=int(daystosend)) # calculates time until wich to send the logs
     daysdelete = currentTime - timedelta(days=int(daystodelete)) # calculates time until wich to delete the logs
-    rl = requests.post(webhookurl, data={"content": "<LOGNOTIFIER> sending logs from the last " + daystosend + " days"})
+    data = {
+    "embeds": [
+        {
+            "title": "Lognotifier",
+            "color": 14939904,
+            "description": f"Sending logs from the last {daystosend} days",
+        }
+    ]}
+    rl = requests.post(webhookurl, json=data)
     for folder in logfolders: # loops trough logfolders defined in config
         folder = folder + "*"
         print("<LOGNOTIFIER> checking folder: " + folder) # log message
